@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model File {
+  id               String   @id @default(cuid())
+  originalFilename String
+  storedFilename   String   @unique // filename on disk
+  mimetype         String
+  size             Int // in bytes
+  path             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
