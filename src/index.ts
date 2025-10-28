@@ -9,6 +9,36 @@ const server = Bun.serve({
         "/": () => new Response('Welcome to bun storage server'),
 
         "/health": () => Response.json({ status: "OK" }, { status: 200 }),
+
+        "/files/:filename": {
+            GET: req => {
+                const { filename } = req.params;
+
+                return Response.json({
+                    filename
+                })
+            },
+
+            DELETE: req => {
+                const { filename } = req.params;
+
+                return Response.json({
+                    filename, success: true
+                })
+            }
+        },
+
+        "/files/upload": {
+            POST: async req => {
+                const formData = await req.formData();
+                const file = formData.get('file');
+
+                return Response.json({
+                    message: "File uploaded successfully",
+                    file
+                })
+            }
+        }
     },
 
     fetch() {
