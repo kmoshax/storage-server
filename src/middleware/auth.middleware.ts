@@ -1,5 +1,5 @@
 import { config } from '../config';
-import { ApiError } from '../lib/api-error';
+import { ApiError } from '../lib/errors';
 
 export function authenticateRequest(request: Request): void {
     const apiKey = request.headers.get('x-api-key');
