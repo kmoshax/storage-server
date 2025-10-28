@@ -1,10 +1,10 @@
 import { config } from '../config';
-import { ApiError } from '../lib/errors';
+import { UnauthorizedError } from '../libs/errors';
 
-export function authenticateRequest(request: Request): void {
-    const apiKey = request.headers.get('x-api-key');
+export function verifyApiKey(req: Request): void {
+    const providedKey = req.headers.get('x-api-key');
     
-    if (!apiKey || apiKey !== config.apiKey) {
-        throw new ApiError(401, 'Unauthorized: Invalid API Key');
+    if (!providedKey || providedKey !== config.apiKey) {
+        throw new UnauthorizedError('Invalid or missing API Key');
     }
 }

@@ -1,4 +1,4 @@
-import { env } from "./lib/utils";
+import { env } from "./libs/utils";
 
 export const config = {
     port: parseInt(process.env.PORT || '3000', 10),
