@@ -1,3 +1,4 @@
+import { FileController } from "./controllers/file.controller";
 import { Logger } from "./libs/logger";
 
 const server = Bun.serve({
@@ -11,33 +12,13 @@ const server = Bun.serve({
         "/health": () => Response.json({ status: "OK" }, { status: 200 }),
 
         "/files/:filename": {
-            GET: req => {
-                const { filename } = req.params;
+            GET: FileController.getFile,
 
-                return Response.json({
-                    filename
-                })
-            },
-
-            DELETE: req => {
-                const { filename } = req.params;
-
-                return Response.json({
-                    filename, success: true
-                })
-            }
+            DELETE: FileController.deleteFile
         },
 
         "/files/upload": {
-            POST: async req => {
-                const formData = await req.formData();
-                const file = formData.get('file');
-
-                return Response.json({
-                    message: "File uploaded successfully",
-                    file
-                })
-            }
+            POST: FileController.uploadFile
         }
     },
 
