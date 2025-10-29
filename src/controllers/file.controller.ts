@@ -1,4 +1,9 @@
-import { BadRequestError } from '../libs/errors';
+import { config } from '../config';
+import {
+	BadRequestError,
+	PayloadTooLargeError,
+	UnsupportedMediaTypeError,
+} from '../libs/errors';
 import { verifyApiKey } from '../middleware/auth.middleware';
 import { FileService } from '../services/file.service';
 
@@ -16,6 +21,22 @@ export class FileController {
 
 		if (!file || !(file instanceof File))
 			throw new BadRequestError('No file uploaded or invalid form data.');
+
+		if (file.size > config.maxFileSize) {
+			const maxSizeMB = config.maxFileSize / 1024 / 1024;
+			throw new PayloadTooLargeError(
+				`File size (${(file.size / 1024 / 1024).toFixed(2)} MB) exceeds the limit of ${maxSizeMB} MB.`,
+			);
+		}
+
+		if (
+			config.allowedMimeTypes.length > 0 &&
+			!config.allowedMimeTypes.includes(file.type)
+		) {
+			throw new UnsupportedMediaTypeError(
+				`File type '${file.type}' is not allowed. Allowed types: ${config.allowedMimeTypes.join(', ')}`,
+			);
+		}
 
 		const fileRecord = await FileService.storeFile(file, file.name);
 		if (!fileRecord)

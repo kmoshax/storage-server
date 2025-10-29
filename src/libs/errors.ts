@@ -28,3 +28,17 @@ export class BadRequestError extends ApiError {
 		this.name = 'BadRequestError';
 	}
 }
+
+export class PayloadTooLargeError extends ApiError {
+	constructor(message = 'Payload too large') {
+		super(413, message);
+		this.name = 'PayloadTooLargeError';
+	}
+}
+
+export class UnsupportedMediaTypeError extends ApiError {
+	constructor(message = 'Unsupported media type') {
+		super(415, message);
+		this.name = 'UnsupportedMediaTypeError';
+	}
+}

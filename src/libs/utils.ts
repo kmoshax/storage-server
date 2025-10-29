@@ -13,3 +13,11 @@ export const env = (key: string, defaultValue?: string): string => {
 
 	return value;
 };
+
+export const parseMimeTypes = (value: string): string[] => {
+	if (!value) return [];
+	return value
+		.split(',')
+		.map((type) => type.trim())
+		.filter(Boolean);
+};
