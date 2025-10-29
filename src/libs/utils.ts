@@ -1,7 +1,7 @@
 import { Logger } from './logger';
 
 export const env = (key: string, defaultValue?: string): string => {
-	const value = process.env[key];
+	const value = process.env[key] || defaultValue;
 
 	if (!value)
 		throw Logger.error(`Missing required environment variable: ${key}`);

@@ -1,3 +1,5 @@
+import type { File } from '../../prisma/generated/client';
+
 export class LRUCache<Key, Value> {
 	private capacity: number;
 	private cache: Map<Key, Value>;
@@ -10,10 +12,10 @@ export class LRUCache<Key, Value> {
 	get(key: Key): Value | undefined {
 		if (!this.cache.has(key)) return undefined;
 
-		const value = this.cache.get(key)!;
+		const value = this.cache.get(key);
 
 		this.cache.delete(key);
-		this.cache.set(key, value);
+		this.cache.set(key, value as Value);
 
 		return value;
 	}
@@ -25,7 +27,7 @@ export class LRUCache<Key, Value> {
 			// remove the least recently used item (the first one)
 			const firstKey = this.cache.keys().next().value;
 
-			this.cache.delete(firstKey!);
+			this.cache.delete(firstKey as Key);
 		}
 
 		this.cache.set(key, value);
@@ -40,4 +42,4 @@ export class LRUCache<Key, Value> {
 	}
 }
 
-export const fileMetadataCache = new LRUCache<string, any>(200);
+export const fileMetadataCache = new LRUCache<string, File>(200);

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: i hate linting 😭 */
 import { EOL } from 'node:os';
 
 const colors = {

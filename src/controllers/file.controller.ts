@@ -39,7 +39,7 @@ export class FileController {
 	}
 
 	public static async getFile(req: RequestWithParams) {
-		const { filename } = req.params!;
+		const { filename } = req.params as { filename: string };
 		if (!filename) throw new BadRequestError('filename is required.');
 
 		const metadata = await FileService.getFile(filename);
@@ -68,7 +68,7 @@ export class FileController {
 		// TODO: make middleware functionlty in global routes
 		verifyApiKey(req);
 
-		const { filename } = req.params!;
+		const { filename } = req.params as { filename: string };
 		if (!filename) throw new BadRequestError('Filename is required.');
 
 		const result = await FileService.deleteFile(filename);
