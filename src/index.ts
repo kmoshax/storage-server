@@ -1,5 +1,15 @@
+import { existsSync, mkdirSync } from 'node:fs';
+
+import { config } from './config';
 import { FileController } from './controllers/file.controller';
+import { withAuth, withErrorHandling } from './handler/wrappers';
 import { Logger } from './libs/logger';
+import { getHealthStatus } from './libs/utils';
+
+if (!existsSync(config.uploadDir)) {
+	mkdirSync(config.uploadDir, { recursive: true });
+	Logger.info(`Created uploads directory at: ${config.uploadDir}`);
+}
 
 const server = Bun.serve({
 	idleTimeout: 10,
@@ -7,28 +17,48 @@ const server = Bun.serve({
 	port: process.env.APP_PORT || 2007,
 
 	routes: {
-		'/': () => new Response('Welcome to bun storage server'),
+		'/': () => new Response('Welcome to Bun Storage Server ⚡️'),
 
-		'/health': () => Response.json({ status: 'OK' }, { status: 200 }),
-
-		'/files/:filename': {
-			GET: FileController.getFile,
-
-			DELETE: FileController.deleteFile,
-		},
+		'/health': async () => Response.json(await getHealthStatus()),
 
 		'/files/upload': {
-			POST: FileController.uploadFile,
+			POST: withAuth(FileController.uploadFile),
+		},
+
+		'/files/:filename': {
+			GET: withErrorHandling(FileController.getFile),
+
+			DELETE: withAuth(FileController.deleteFile),
 		},
 	},
 
-	fetch() {
-		return new Response('404!', { status: 404 });
+	fetch(req) {
+		const url = new URL(req.url);
+		Logger.warn(`404 Not Found for: ${req.method} ${url.pathname}`);
+		return Response.json(
+			{ error: 'Not Found', path: url.pathname },
+			{ status: 404 },
+		);
 	},
 
-	error(error) {
-		Logger.error(new Error('Unhandled server error', { cause: error }));
-		return new Response('Something went wrong!', { status: 500 });
+	error(error: Error) {
+		Logger.error('A critical, unhandled server error occurred', error);
+
+		if (process.env.NODE_ENV !== 'production') {
+			return new Response(
+				JSON.stringify({
+					error: 'Internal Server Error',
+					message: error.message,
+					stack: error.stack,
+				}),
+				{ status: 500, headers: { 'Content-Type': 'application/json' } },
+			);
+		}
+
+		return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' },
+		});
 	},
 });
 
