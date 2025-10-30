@@ -82,18 +82,18 @@ All requests requiring authentication must include the `x-api-key` header.
 
 ### 1. Upload a File
 
--   **Endpoint**: `POST /upload`
+-   **Endpoint**: `POST /files/upload`
 -   **Auth**: Required
 -   **Body**: `multipart/form-data` with a field named `file`.
 
 **Example `curl` request:**
 ```bash
-curl -X POST http://localhost:3000/upload \
+curl -X POST http://localhost:3000/files/upload \
   -H "x-api-key: YOUR_API_KEY" \
   -F "file=@/path/to/your/image.png"
 ```
 
-**Success Response (201 Created):**
+**Success Response (200 Created):**
 ```json
 {
   "message": "File uploaded successfully",
