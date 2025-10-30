@@ -63,3 +63,5 @@ const server = Bun.serve({
 });
 
 Logger.success(`🚀 Server running at http://${server.hostname}:${server.port}`);
+
+export default server;

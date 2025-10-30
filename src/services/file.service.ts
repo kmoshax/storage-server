@@ -1,13 +1,12 @@
 import { join } from 'node:path';
+import { unlink } from 'node:fs/promises';
 
-import type { File } from '../../prisma/generated/client';
 import { config } from '../config';
-
-import { fileMetadataCache } from '../libs/cache';
+import { Logger } from '../libs/logger';
 import { prisma } from '../libs/prisma';
 import { NotFoundError } from '../libs/errors';
-import { unlink } from 'node:fs/promises';
-import { Logger } from '../libs/logger';
+import { fileMetadataCache } from '../libs/cache';
+import type { File } from '../../prisma/generated/client';
 
 export class FileService {
 	public static async storeFile(
@@ -19,8 +18,6 @@ export class FileService {
 		const filePath = join(config.uploadDir, storedFileName);
 
 		// ultrafast way to write files on the disk
-		await Bun.write(filePath, file);
-
 		const fileRecord = await prisma.file.create({
 			data: {
 				originalFilename: originalFileName,
@@ -30,6 +27,8 @@ export class FileService {
 				path: filePath,
 			},
 		});
+
+		await Bun.write(filePath, file);
 
 		return fileRecord;
 	}
