@@ -4,7 +4,8 @@ An ultrafast, secure, and production-ready file storage API built with the moder
 
 This project is designed from the ground up for performance, leveraging Bun's native APIs for file I/O, streaming, and serving HTTP requests. It's structured with a clean, scalable architecture and comes with a complete testing and benchmarking suite.
 
-![Demo](https://github.com/kmoshax/storage-server/raw/refs/heads/main/.assets/benchmark.mp4) 
+https://github.com/user-attachments/assets/d48e6b09-7df2-4a95-b10b-599fb9a3b9e8
+
 ---
 
 ## Core Features
