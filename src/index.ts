@@ -17,9 +17,20 @@ const server = Bun.serve({
 	port: process.env.APP_PORT || 2007,
 
 	routes: {
-		'/': () => new Response('Welcome to Bun Storage Server ⚡️'),
+		'/': () => new Response('Welcome to Bun Storage Server ⚡️', {
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+			},
+		}),
 
-		'/health': async () => Response.json(await getHealthStatus()),
+		'/health': async () => new Response(JSON.stringify(await getHealthStatus()), {
+			headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+			},
+		}),
 
 		'/files/upload': {
 			POST: withAuth(FileController.uploadFile),
@@ -34,10 +45,30 @@ const server = Bun.serve({
 
 	fetch(req) {
 		const url = new URL(req.url);
+
+		// Handle CORS preflight requests
+		if (req.method === 'OPTIONS') {
+			return new Response(null, {
+				status: 204,
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+					'Access-Control-Max-Age': '86400',
+				},
+			});
+		}
+
 		Logger.warn(`404 Not Found for: ${req.method} ${url.pathname}`);
 		return Response.json(
 			{ error: 'Not Found', path: url.pathname },
-			{ status: 404 },
+			{
+				status: 404,
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+				},
+			},
 		);
 	},
 
@@ -51,13 +82,24 @@ const server = Bun.serve({
 					message: error.message,
 					stack: error.stack,
 				}),
-				{ status: 500, headers: { 'Content-Type': 'application/json' } },
+				{
+					status: 500,
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+						'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+					},
+				},
 			);
 		}
 
 		return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
 			status: 500,
-			headers: { 'Content-Type': 'application/json' },
+			headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+			},
 		});
 	},
 });

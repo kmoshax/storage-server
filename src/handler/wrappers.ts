@@ -4,23 +4,38 @@ import { verifyApiKey } from '../middleware/auth.middleware';
 
 type ControllerAction = (req: Request) => Promise<Response> | Response;
 
+function addCorsHeaders(response: Response): Response {
+	const headers = new Headers(response.headers);
+	headers.set('Access-Control-Allow-Origin', '*');
+	headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers,
+	});
+}
+
 function handleErrors(action: ControllerAction): ControllerAction {
 	return async (req: Request) => {
 		try {
-			return await action(req);
+			const response = await action(req);
+			return addCorsHeaders(response);
 		} catch (error) {
 			if (error instanceof ApiError) {
 				Logger.warn(
 					`API Error: ${error.statusCode} - ${error.message} for ${req.method} ${req.url}`,
 				);
-				return Response.json(
+				const response = Response.json(
 					{ error: error.message },
 					{ status: error.statusCode },
 				);
+				return addCorsHeaders(response);
 			}
 
 			Logger.error(error as Error);
-			return Response.json({ error: 'Internal Server Error' }, { status: 500 });
+			const response = Response.json({ error: 'Internal Server Error' }, { status: 500 });
+			return addCorsHeaders(response);
 		}
 	};
 }
