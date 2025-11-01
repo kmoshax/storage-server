@@ -20,7 +20,7 @@ const server = Bun.serve({
 		'/': () => new Response('Welcome to Bun Storage Server ⚡️', {
 			headers: {
 				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
 			},
 		}),
 
@@ -28,7 +28,7 @@ const server = Bun.serve({
 			headers: {
 				'Content-Type': 'application/json',
 				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
 			},
 		}),
 
@@ -53,7 +53,7 @@ const server = Bun.serve({
 				headers: {
 					'Access-Control-Allow-Origin': '*',
 					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
 					'Access-Control-Max-Age': '86400',
 				},
 			});
@@ -66,7 +66,7 @@ const server = Bun.serve({
 				status: 404,
 				headers: {
 					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
 				},
 			},
 		);
@@ -87,7 +87,7 @@ const server = Bun.serve({
 					headers: {
 						'Content-Type': 'application/json',
 						'Access-Control-Allow-Origin': '*',
-						'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+						'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
 					},
 				},
 			);
@@ -98,7 +98,7 @@ const server = Bun.serve({
 			headers: {
 				'Content-Type': 'application/json',
 				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key',
 			},
 		});
 	},

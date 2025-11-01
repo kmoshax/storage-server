@@ -7,7 +7,7 @@ type ControllerAction = (req: Request) => Promise<Response> | Response;
 function addCorsHeaders(response: Response): Response {
 	const headers = new Headers(response.headers);
 	headers.set('Access-Control-Allow-Origin', '*');
-	headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key');
 
 	return new Response(response.body, {
 		status: response.status,
